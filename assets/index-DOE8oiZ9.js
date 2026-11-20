@@ -5275,12 +5275,17 @@ void main(){
   float amp = 0.028 + 0.05 * uBubbles;
   float e = sp + (part ? amp * sin(10.0 * v + uTime * (4.5 + 7.0 * uBubbles) + cd.x * 1.3 + cd.y * 2.1)
                        + amp * 0.6 * uBubbles * sin(23.0 * v - uTime * 13.0) : 0.0)
-              + (cm.y > 0.5 && cm.z > 0.5 ? 0.05 * (1.0 - 4.0 * v * v) : 0.0);
+              // two colours meeting: a soft wavy boundary like a liquid surface, as in Water Sort Jam's multi-colour
+              // bottles (RE/videos/sort-idea-1115 at 68 s, sheets l5pour_01) [V]
+              + (cm.y > 0.5 && cm.z > 0.5 ? 0.035 * sin(9.0 * v + uTime * 2.6 + cd.x * 1.7 + cd.y * 2.9)
+                                           + 0.015 * sin(21.0 * v - uTime * 3.3) : 0.0);
   bool inA = cm.y > 0.5 && u < e, inB = cm.z > 0.5 && u >= e;
   if (inA || inB) {
     vec3 liq = inA ? ca : cb, fo = inA ? fa : fb;
     // foam line where the column meets air (Tray_Water _Line) [D]
     if (part && ((inA && cm.z < 0.5 && u > e - ${qd}) || (inB && cm.y < 0.5 && u < e + ${qd}))) liq = fo;
+    // the boundary between two colours: a thin lighter meniscus on the lower segment's side [V WSJ L6]
+    if (cm.y > 0.5 && cm.z > 0.5 && inA && u > e - 0.035) liq = mix(liq, fo, 0.55);
     // rim light: Unlit/FX/Liquid adds _RimColor^2 * pow(1 - N.V, _RimPower) at the silhouette; here by the distance
     // to the glass [C 03 1.1]
     float dg = -f - ${Rd.toFixed(3)};
