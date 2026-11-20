@@ -5214,11 +5214,14 @@ void main(){
     float hOff = uSeg[k].z > 0.5 ? tilt : 0.0, tOff = uSeg[k].w > 0.5 ? -tilt : 0.0;
     float cov = smoothstep(hOff - aa, hOff + aa, t) * smoothstep(L + tOff + aa, L + tOff - aa, t);
     if (cov <= 0.0) continue;
-    vec3 w = uCol[k];
-    vec3 c = w * (0.92 + 0.08 * smoothstep(0.1, 0.35, u));
-    c = mix(c, mix(w, vec3(1.0), 0.32), exp(-pow((u - 0.33) / 0.13, 2.0)));    // highlight band
-    c *= 1.0 - 0.22 * smoothstep(0.55, 1.0, u);                                 // darker toward the frame
-    c = mix(mix(w, vec3(1.0), 0.45), c, smoothstep(0.02, 0.09, u));             // light outer rim
+    // cross-section measured on Water Sort Jam's belt (red: rim #E3979D, body #FF5556, highlight #FD9FA0 at ~1/3,
+    // inner edge #FB2424; blue: rim #8296F9, highlight #6290FE, inner #2A69FF): the colour stays SATURATED and gets
+    // deeper toward the frame instead of greyer; a broad highlight at ~1/3; a light outer rim [M]
+    vec3 w = min(uCol[k] * 1.1, vec3(1.0));                                      // a touch more vivid than Water Out's
+    vec3 deep = min(w * w * 1.25, vec3(1.0));
+    vec3 c = mix(w, deep, 0.6 * smoothstep(0.3, 1.0, u));
+    c = mix(c, mix(w, vec3(1.0), 0.34), exp(-pow((u - 0.32) / 0.12, 2.0)));    // highlight band
+    c = mix(mix(w, vec3(1.0), 0.5), c, smoothstep(0.02, 0.08, u));             // light outer rim
     float th = t - hOff, tt = L + tOff - t;                                     // distance from head / tail edge
     if (uSeg[k].z > 0.5) {
       c = mix(c, mix(w, vec3(1.0), 0.42), 0.6 * (1.0 - smoothstep(0.0, 0.45, th)));   // head glow
