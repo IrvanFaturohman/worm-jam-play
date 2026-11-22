@@ -1,0 +1,40 @@
+/* The loading screen (Figma "Flow Jam - UI", node 2:4). Plain CSS so it shows before the game's script has loaded.
+   Units: px of a 1080 wide screen. */
+@font-face { font-family: 'Lilita One'; src: url(LilitaOne-Regular.ttf) format('truetype'); font-display: block; }
+#boot {
+  --u: calc(min(100vw, 56.25vh) / 1080);
+  position: fixed; inset: 0; z-index: 100; display: flex; justify-content: center; overflow: hidden;
+  background: radial-gradient(ellipse 70% 34% at 50% 45.7%, rgba(143, 244, 255, 0.75), rgba(53, 212, 255, 0.3) 52%, rgba(12, 125, 255, 0) 100%),
+    linear-gradient(#0b49f5 0%, #0c7dff 42%, #24b4ff 68%, #6fe3ff 100%);
+  transition: opacity 0.28s ease; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+#boot.out { opacity: 0; pointer-events: none; }
+.boot-stage { position: relative; height: 100%; width: min(100vw, 56.25vh); }
+.boot-t {
+  position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--w) * 1%); height: auto;
+  transform: translate(-50%, -50%); animation: bootFloat 3.2s ease-in-out var(--d) infinite alternate; will-change: transform;
+}
+.boot-logo {
+  position: absolute; left: 50%; top: 45.7%; width: 83.3%; height: auto; transform: translate(-50%, -50%);
+  filter: drop-shadow(0 calc(16 * var(--u)) calc(17 * var(--u)) rgba(8, 26, 92, 0.35)); animation: bootLogo 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+.boot-load { position: absolute; left: 25%; width: 50%; top: 83.3%; }
+.boot-bar {
+  position: relative; box-sizing: content-box; height: calc(84 * var(--u)); border-radius: calc(53 * var(--u)); margin: calc(-11 * var(--u));
+  background: #121c45; border: calc(11 * var(--u)) solid #2f55c6; box-shadow: 0 calc(10 * var(--u)) calc(20 * var(--u)) rgba(8, 26, 92, 0.45); overflow: hidden;
+}
+.boot-fill {
+  position: absolute; left: calc(7 * var(--u)); top: calc(7 * var(--u)); bottom: calc(7 * var(--u)); min-width: calc(70 * var(--u)); width: 0;
+  max-width: calc(100% - 14 * var(--u)); border-radius: calc(35 * var(--u)); background: linear-gradient(#fff65e, #ffd42e 55%, #ff9d1f);
+}
+.boot-fill::after {
+  content: ''; position: absolute; left: calc(22 * var(--u)); right: calc(22 * var(--u)); top: calc(9 * var(--u)); height: calc(11 * var(--u));
+  border-radius: calc(6 * var(--u)); background: rgba(255, 255, 255, 0.6);
+}
+.boot-text {
+  margin-top: calc(38 * var(--u)); text-align: center; color: #fff; font: calc(64 * var(--u)) / 1.1 'Lilita One', 'Arial Rounded MT Bold', sans-serif; letter-spacing: calc(1 * var(--u));
+  -webkit-text-stroke: calc(20 * var(--u)) #0d3a9c; paint-order: stroke fill;
+}
+@keyframes bootFloat { from { transform: translate(-50%, calc(-50% - 1.2%)) rotate(-2.5deg); } to { transform: translate(-50%, calc(-50% + 1.2%)) rotate(2.5deg); } }
+@keyframes bootLogo { from { transform: translate(-50%, -50%) scale(0.7); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .boot-t { animation: none; } .boot-logo { animation: none; } }
